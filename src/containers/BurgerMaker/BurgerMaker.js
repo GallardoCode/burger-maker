@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Auxiliary from '../../hoc/Auxiliary'
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
+import Modal from '../../components/UI/Modal/Modal'
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -19,6 +21,7 @@ class BurgerMaker extends Component {
     },
     totalPrice: 4,
     purchasable: false,
+    purchasing: false,
   }
 
   addIngredientHandler = (type) => {
@@ -51,6 +54,19 @@ class BurgerMaker extends Component {
     )
   }
 
+  purchasingHandler = () => {
+    this.setState({ purchasing: true })
+  }
+
+  purchasingCancelHandler = () => {
+    this.setState({ purchasing: false })
+  }
+
+  purchasingContinue = () => {
+    // eslint-disable-next-line no-alert
+    alert('made purchase')
+  }
+
   purchasableState() {
     this.setState((prevState) => ({
       purchasable:
@@ -62,12 +78,20 @@ class BurgerMaker extends Component {
   }
 
   render() {
-    const { ingredients, totalPrice, purchasable } = this.state
+    const { ingredients, totalPrice, purchasable, purchasing } = this.state
     const disabledIngredients = Object.fromEntries(
       Object.entries(ingredients).map((v) => [v[0], v[1] === 0])
     )
     return (
       <Auxiliary>
+        <Modal show={purchasing}>
+          <OrderSummary
+            ingredients={ingredients}
+            price={totalPrice}
+            purchaseCanceled={this.purchasingCancelHandler}
+            purchasingContinued={this.purchasingContinue}
+          />
+        </Modal>
         <Burger ingredients={ingredients} />
         <BuildControls
           ingredientAdded={this.addIngredientHandler}
@@ -75,6 +99,7 @@ class BurgerMaker extends Component {
           disabledIngredients={disabledIngredients}
           purchasable={purchasable}
           totalPrice={totalPrice}
+          ordering={this.purchasingHandler}
         />
       </Auxiliary>
     )

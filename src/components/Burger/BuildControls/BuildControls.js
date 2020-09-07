@@ -17,6 +17,7 @@ const BuildControls = (props) => {
     disabledIngredients,
     totalPrice,
     purchasable,
+    ordering,
   } = props
 
   return (
@@ -34,6 +35,7 @@ const BuildControls = (props) => {
       <button
         className={styles.OrderButton}
         disabled={!purchasable}
+        onClick={ordering}
         type="button"
       >
         Order Now
@@ -48,6 +50,7 @@ BuildControls.propTypes = {
   disabledIngredients: PropTypes.objectOf(PropTypes.bool).isRequired,
   totalPrice: PropTypes.number.isRequired,
   purchasable: PropTypes.bool.isRequired,
+  ordering: PropTypes.func.isRequired,
 }
 
 export default BuildControls
