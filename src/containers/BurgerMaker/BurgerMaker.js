@@ -84,7 +84,7 @@ class BurgerMaker extends Component {
     )
     return (
       <Auxiliary>
-        <Modal show={purchasing}>
+        <Modal clickOutside={this.purchasingCancelHandler} show={purchasing}>
           <OrderSummary
             ingredients={ingredients}
             price={totalPrice}

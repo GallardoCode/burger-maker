@@ -5,18 +5,20 @@ import styles from './Modal.module.css'
 import BackDrop from '../BackDrop/BackDrop'
 
 const Modal = (props) => {
-  const { children, show } = props
+  const { children, show, clickOutside } = props
   return (
     <BackDrop show={show}>
-      <div
-        className={styles.Modal}
-        style={{
-          transform: show ? 'translateY(0)' : 'translateY(-100vh)',
-          opacity: show ? 1 : 0,
-        }}
-      >
-        <FocusOn>{children}</FocusOn>
-      </div>
+      <FocusOn onClickOutside={clickOutside}>
+        <div
+          className={styles.Modal}
+          style={{
+            transform: show ? 'translateY(0)' : 'translateY(-100vh)',
+            opacity: show ? 1 : 0,
+          }}
+        >
+          {children}
+        </div>
+      </FocusOn>
     </BackDrop>
   )
 }
@@ -27,10 +29,14 @@ Modal.propTypes = {
     PropTypes.element,
   ]).isRequired,
   show: PropTypes.bool,
+  clickOutside: PropTypes.func.isRequired,
 }
 
 Modal.defaultProps = {
   show: false,
 }
 
-export default Modal
+export default React.memo(
+  Modal,
+  (prevProps, nextProps) => prevProps.show === nextProps.show
+)
