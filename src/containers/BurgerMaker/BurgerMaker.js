@@ -4,6 +4,8 @@ import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/Modal'
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
+import Spinner from '../../components/UI/Spinner/Spinner'
+import axios from '../../axios-order'
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -22,6 +24,7 @@ class BurgerMaker extends Component {
     totalPrice: 4,
     purchasable: false,
     purchasing: false,
+    loading: false,
   }
 
   addIngredientHandler = (type) => {
@@ -62,9 +65,30 @@ class BurgerMaker extends Component {
     this.setState({ purchasing: false })
   }
 
-  purchasingContinue = () => {
-    // eslint-disable-next-line no-alert
-    alert('made purchase')
+  purchasingContinueHandler = () => {
+    this.setState({ loading: true })
+    const { ingredients, totalPrice } = this.state
+    const order = {
+      ingredients,
+      totalPrice,
+      customer: {
+        name: 'Ricardo Gallardo',
+        address: {
+          street: 'Fake street',
+          postCode: 'wbest',
+          country: 'United Kingdom',
+        },
+        email: 'test@test.com',
+      },
+      deliveryMethod: 'fastest',
+    }
+
+    axios
+      .post('/orders.json', order)
+      .then(() => {
+        this.setState({ loading: false })
+      })
+      .catch(() => this.setState({ loading: false }))
   }
 
   purchasableState() {
@@ -78,19 +102,31 @@ class BurgerMaker extends Component {
   }
 
   render() {
-    const { ingredients, totalPrice, purchasable, purchasing } = this.state
+    const {
+      ingredients,
+      totalPrice,
+      purchasable,
+      purchasing,
+      loading,
+    } = this.state
     const disabledIngredients = Object.fromEntries(
       Object.entries(ingredients).map((v) => [v[0], v[1] === 0])
+    )
+
+    const orderSummary = !loading ? (
+      <OrderSummary
+        ingredients={ingredients}
+        price={totalPrice}
+        purchaseCanceled={this.purchasingCancelHandler}
+        purchasingContinued={this.purchasingContinueHandler}
+      />
+    ) : (
+      <Spinner />
     )
     return (
       <Auxiliary>
         <Modal clickOutside={this.purchasingCancelHandler} show={purchasing}>
-          <OrderSummary
-            ingredients={ingredients}
-            price={totalPrice}
-            purchaseCanceled={this.purchasingCancelHandler}
-            purchasingContinued={this.purchasingContinue}
-          />
+          {orderSummary}
         </Modal>
         <Burger ingredients={ingredients} />
         <BuildControls
