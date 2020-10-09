@@ -23,11 +23,15 @@ const Modal = (props) => {
   )
 }
 
+Modal.defaultProps = {
+  children: null,
+}
+
 Modal.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.element,
-  ]).isRequired,
+    PropTypes.node,
+  ]),
   show: PropTypes.bool,
   clickOutside: PropTypes.func.isRequired,
 }
