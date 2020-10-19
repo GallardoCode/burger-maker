@@ -16,7 +16,7 @@ const Button = ({ clicked, btnType, children }) => {
 
 Button.propTypes = {
   clicked: PropTypes.func.isRequired,
-  btnType: PropTypes.string,
+  btnType: PropTypes.oneOf(['Success', 'Danger']),
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

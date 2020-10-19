@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Auxiliary from '../../hoc/Auxiliary'
 import Burger from '../../components/Burger/Burger'
 import BuildControls from '../../components/Burger/BuildControls/BuildControls'
@@ -71,29 +72,18 @@ class BurgerMaker extends Component {
   }
 
   purchasingContinueHandler = () => {
-    this.setState({ loading: true })
+    const { history } = this.props
     const { ingredients, totalPrice } = this.state
-    const order = {
-      ingredients,
-      totalPrice,
-      customer: {
-        name: 'Ricardo Gallardo',
-        address: {
-          street: 'Fake street',
-          postCode: 'wbest',
-          country: 'United Kingdom',
-        },
-        email: 'test@test.com',
-      },
-      deliveryMethod: 'fastest',
-    }
-
-    axios
-      .post('/orders.json', order)
-      .then(() => {
-        this.setState({ loading: false })
-      })
-      .catch(() => this.setState({ loading: false }))
+    const queryParams = [
+      ...Object.entries(ingredients).map(
+        (v) => `${encodeURIComponent(v[0])}=${encodeURIComponent(v[1])}`
+      ),
+      `price=${totalPrice}`,
+    ].join('&')
+    history.push({
+      pathname: '/checkout',
+      search: `?${queryParams}`,
+    })
   }
 
   purchasableState() {
@@ -164,6 +154,10 @@ class BurgerMaker extends Component {
       </Auxiliary>
     )
   }
+}
+
+BurgerMaker.propTypes = {
+  history: PropTypes.objectOf(PropTypes.any).isRequired,
 }
 
 export default withErrorHandler(BurgerMaker, axios)
