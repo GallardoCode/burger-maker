@@ -22,7 +22,7 @@ class Checkout extends Component {
     searchParams.forEach((v, k) => {
       if (k !== 'price') ingredients = { ...ingredients, [k]: +v }
     })
-    this.setState({ ingredients, totalPrice: searchParams.get('price') })
+    this.setState({ ingredients, totalPrice: +searchParams.get('price') })
   }
 
   checkoutContinueHandler = () => {
