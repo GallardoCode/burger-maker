@@ -28,6 +28,7 @@
     "rules": {
         "react/state-in-constructor": [1, "never"],
         "react/jsx-filename-extension": [1, {"extensions": [".js", ".jsx"]}],
+        "react/jsx-props-no-spreading": ["error", { "exceptions": ["input", "textarea", "select"]}],
         "prettier/prettier": ["error"]
     }
 }
